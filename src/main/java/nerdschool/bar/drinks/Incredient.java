@@ -21,7 +21,8 @@ public enum Incredient {
   LIMEJUICE(10),
   GREENSTUFF(10),
   TONICWATER(20),
-  GIN(85);
+  GIN(85),
+  GINGER(25);
 
   private final int price;
 

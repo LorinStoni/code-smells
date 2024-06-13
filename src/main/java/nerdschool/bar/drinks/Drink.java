@@ -14,10 +14,61 @@
  */
 package nerdschool.bar.drinks;
 
+import java.util.Map;
+import java.util.Optional;
+
 public enum Drink implements Sellable {
 
-  BEER("hansa", 74, true),
-  CIDER("grans", 103, true);
+  BEER(
+      "hansa",
+      74,
+      true
+  ),
+  CIDER(
+      "grans",
+      103,
+      true
+  ),
+  PROPERCIDER(
+      "strongbow",
+      110,
+      true
+  ),
+  GT(
+      "gt",
+      2,
+      new Recipe(
+          Incredient.GIN, 1f,
+          Incredient.TONICWATER, 1f,
+          Incredient.GREENSTUFF, 1f
+      ),
+      false
+  ),
+  BACADISPECIAL(
+      "bacardi_special",
+      2,
+      new Recipe(
+          Incredient.GIN, 0.5f,
+          Incredient.RUM, 1f,
+          Incredient.GRENADINE, 1f,
+          Incredient.LIMEJUICE, 1f
+      ),
+      false
+  ),
+  WHISKY(
+      "whisky",
+      150,
+      3,
+      false
+  ),
+  GINGINGER(
+      "Gin-Ginger",
+      new Recipe(
+          Incredient.GIN, 1.5f,
+          Incredient.GINGER, 1f
+      ),
+      true
+  );
 
   private static final int NOMAXAMOUNT = -1;
   private static final int NOFIXPRICE = -1;
@@ -27,6 +78,15 @@ public enum Drink implements Sellable {
   private final Recipe recipe;
   private final int fixPrice;
   private final boolean hasStudentDiscount;
+
+  public static Optional<Drink> ofName(String name) {
+    for (Drink d : Drink.values()) {
+      if (d.name.equals(name)) {
+        return Optional.of(d);
+      }
+    }
+    return Optional.empty();
+  }
 
   Drink(String name, int fixPrice, boolean hasStudentDiscount) {
     this.name = name;
@@ -72,15 +132,18 @@ public enum Drink implements Sellable {
     return recipe;
   }
 
+  public int getMaxAmount() {
+    return maxAmount;
+  }
+
+  public boolean amountIsPossible(int amount) {
+    return maxAmount == NOMAXAMOUNT || amount <= maxAmount;
+  }
+
   @Override
-  public final int getPrice() {
+  public final int getBasePrice() {
     if (fixPrice == NOFIXPRICE) {
-      // calculate price
-      return (int) recipe.getIncredients()
-          .entrySet()
-          .stream()
-          .mapToDouble(entry -> entry.getKey().getPrice() * entry.getValue().floatValue())
-          .sum();
+      return recipe.getTotalPrice();
     }
 
     return fixPrice;

@@ -16,7 +16,7 @@ package nerdschool.bar.drinks;
 
 public interface Sellable {
 
-  int getPrice();
+  int getBasePrice();
 
   boolean hasStudentDiscount();
 
